@@ -76,8 +76,8 @@ def sentiment(overview):
     sentiment_dict = sid_obj.polarity_scores(overview)
     sent_values = [x for x in sentiment_dict.values()]
     sent_values=sent_values[:3]
-    final = sent_keys[index_max]    
     index_max = np.argmax(sent_values)
+    final = sent_keys[index_max] 
     response=f"Base on overview its a {final}"
     return response
 ########## Callbacks
