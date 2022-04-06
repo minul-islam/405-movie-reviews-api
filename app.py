@@ -84,7 +84,7 @@ def on_click(n_clicks, data):
     if n_clicks is None:
         raise PreventUpdate
     elif n_clicks==0:
-        data = {'title':' ', 'release_date':' ', 'overview':' '}
+        data = {'title':' ', 'release_date':' ', 'overview':' ',}
     elif n_clicks>0:
         data = api_pull(random.choice(ids_list))
         
