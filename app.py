@@ -4,14 +4,14 @@ from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 from helpers.key_finder import api_key
 from helpers.api_call import *
-
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 ########### Define a few variables ######
 
-tabtitle = 'Movies'
+tabtitle = 'Movies Sentiment Based on Summary'
 sourceurl = 'https://www.kaggle.com/tmdb/tmdb-movie-metadata'
 sourceurl2 = 'https://developers.themoviedb.org/3/getting-started/introduction'
-githublink = 'https://github.com/austinlasseter/tmdb-rf-classifier'
+githublink = 'https://github.com/minul-islam/405-movie-reviews-api'
 
 
 
@@ -31,16 +31,17 @@ app.layout = html.Div(children=[
         html.Div([
             html.Div([
                 html.Div('Randomly select a movie summary'),
-                html.Button(id='eek-button', n_clicks=0, children='API call', style={'color': 'rgb(255, 255, 255)'}),
+                html.Button(id='eek-button', n_clicks=0, children='API call', style={'color': 'rgb(0, 255,0)'}),
                 html.Div(id='movie-title', children=[]),
                 html.Div(id='movie-release', children=[]),
                 html.Div(id='movie-overview', children=[]),
+                html.Div(id='movie-sentiment', children=[]),
 
             ], style={ 'padding': '12px',
                     'font-size': '22px',
                     # 'height': '400px',
-                    'border': 'thick red solid',
-                    'color': 'rgb(255, 255, 255)',
+                    'border': 'thick blue solid',
+                    'color': 'rgb(255, 0, 255)',
                     'backgroundColor': '#536869',
                     'textAlign': 'left',
                     },
@@ -68,6 +69,18 @@ app.layout = html.Div(children=[
     ]
 )
 
+
+def sentiment(overview):
+    sid_obj = SentimentIntensityAnalyzer()
+    sentiment_dict = sid_obj.polarity_scores(overview)
+    if sentiment_dict['compound'] >= 0.05 :
+        final="Happy"
+    elif sentiment_dict['compound'] <= - 0.05 :
+        final="Sad"
+    else :
+        final="Neutral"
+    response=f"Sentence Overall Rated As {final}"
+    retunr response
 ########## Callbacks
 
 # TMDB API call
@@ -93,7 +106,8 @@ def on_data(ts, data):
     if ts is None:
         raise PreventUpdate
     else:
-        return data['title'], data['release_date'], data['overview']
+        
+        return data['title'], data['release_date'], data['overview'], f"\n"+str(sentiment(data['overview']))
 
 
 ############ Deploy
