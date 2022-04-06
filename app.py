@@ -31,7 +31,7 @@ app.layout = html.Div(children=[
         html.Div([
             html.Div([
                 html.Div('Randomly select a movie summary'),
-                html.Button(id='eek-button', n_clicks=0, children='API call', style={'color': 'rgb(255,255,0)'}),
+                html.Button(id='eek-button', n_clicks=0, children='API call', style={'color': 'rgb(0, 255,0)'}),
                 html.Div(id='movie-title', children=[]),
                 html.Div(id='movie-release', children=[]),
                 html.Div(id='movie-overview', children=[]),
@@ -71,15 +71,15 @@ app.layout = html.Div(children=[
 
 
 def sentiment(overview):
-    sent_keys = [" sad movie. why watch it?", "confusing. your call", "happy movie.lets watch it."]
     sid_obj = SentimentIntensityAnalyzer()
     sentiment_dict = sid_obj.polarity_scores(overview)
-    sent_values = [x for x in sentiment_dict.values()]
-    sent_values=sent_values[:3]
-    # find the index of the max value
-    index_max = np.argmax(sent_values)
-    final=sent_keys[index_max]
-    response=f"Based on overview its a {final}"
+    if sentiment_dict['compound'] >= 0.05 :
+        final="Happy"
+    elif sentiment_dict['compound'] <= - 0.05 :
+        final="Sad"
+    else :
+        final="Neutral"
+    response=f"Sentence Overall Rated As {final}"
     return response
 ########## Callbacks
 
