@@ -80,7 +80,7 @@ def sentiment(overview):
     else :
         final="Neutral"
     response=f"Sentence Overall Rated As {final}"
-    retunr response
+    return response
 ########## Callbacks
 
 # TMDB API call
