@@ -108,7 +108,7 @@ def on_data(ts, data):
         raise PreventUpdate
     else:
         
-        return data['title'], data['release_date'], data['overview'], f"\n\n"+str(sentiment(data['overview']))
+        return data['title'], data['release_date'], data['overview'], f"\n"+str(sentiment(data['overview']))
 
 
 ############ Deploy
