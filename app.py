@@ -73,14 +73,20 @@ app.layout = html.Div(children=[
 def sentiment(overview):
     sid_obj = SentimentIntensityAnalyzer()
     sentiment_dict = sid_obj.polarity_scores(overview)
-    if sentiment_dict['compound'] >= 0.05 :
-        final="Happy"
-    elif sentiment_dict['compound'] <= - 0.05 :
-        final="Sad"
-    else :
-        final="Neutral"
-    response=f"Sentence Overall Rated As {final}"
+    sent_keys = [" sad movie, lets not watch it", " confusing movie, your call", " happy movie, lets watch it"]
+    sent_values = [x for x in sentiment_dict.values()]
+    sent_values=sent_values[:3]
+    index_max = np.argmax(sent_values)
+    final = sent_keys[index_max]
+    response=f"Based on overview it a{final}"
     return response
+    #if sentiment_dict['compound'] >= 0.05 :
+    #    final="Happy"
+    #elif sentiment_dict['compound'] <= - 0.05 :
+    #    final="Sad"
+    #else :
+    #    final="Neutral"
+    
 ########## Callbacks
 
 # TMDB API call
