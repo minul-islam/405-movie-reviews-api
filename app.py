@@ -4,7 +4,13 @@ from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 from helpers.key_finder import api_key
 from helpers.api_call import *
-
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+import pandas as pd
+import numpy as np
+import requests
+from bs4 import BeautifulSoup
+import json
+from pandas.io.json import json_normalize
 
 ########### Define a few variables ######
 
@@ -33,14 +39,15 @@ app.layout = html.Div(children=[
                 html.Div('Randomly select a movie summary'),
                 html.Button(id='eek-button', n_clicks=0, children='API call', style={'color': 'rgb(255, 255, 255)'}),
                 html.Div(id='movie-title', children=[]),
-                html.Div(id='movie-release', children=[]),
+                html.Div(id='movie-release',children=[]),
                 html.Div(id='movie-overview', children=[]),
+                html.Div(id='movie-senti', children=[]),
 
             ], style={ 'padding': '12px',
                     'font-size': '22px',
                     # 'height': '400px',
-                    'border': 'thick red solid',
-                    'color': 'rgb(255, 255, 255)',
+                    'border': 'thick blue solid',
+                    'color': 'rgb(0, 0, 255)',
                     'backgroundColor': '#536869',
                     'textAlign': 'left',
                     },
@@ -81,11 +88,31 @@ def on_click(n_clicks, data):
         data = {'title':' ', 'release_date':' ', 'overview':' '}
     elif n_clicks>0:
         data = api_pull(random.choice(ids_list))
+        #sentiment part 
+        sid_obj = SentimentIntensityAnalyzer()
+        sentiment_dict = sid_obj.polarity_scores(data['overview'])
+        # decide sentiment as positive, negative and neutral
+        if sentiment_dict['compound'] >= 0.05 :
+            final="Happy"
+        elif sentiment_dict['compound'] <= - 0.05 :
+            final="Sad"
+        else :
+            final="Neutral"
+        # responses
+        # response1=f"Overall sentiment dictionary is : {sentiment_dict}"
+        #response2=f"Sentence rated as {round(sentiment_dict['neg']*100, 2)}% Sad"
+        #response3=f"Sentence rated as {round(sentiment_dict['neu']*100, 2)}% Neutral"
+        #response4=f"Sentence rated as {round(sentiment_dict['pos']*100,2 )}% Happy"
+        movie_senti=f"Movie review is overall rated as {final} with {round(sentiment_dict['neg']*100, 2)}% Negative vs {round(sentiment_dict['pos']*100,2 )}% Positive words"
+        data['movie_senti']= movie_senti
     return data
+
+
 
 @app.callback([Output('movie-title', 'children'),
                 Output('movie-release', 'children'),
                 Output('movie-overview', 'children'),
+                Output('movie-sentitment', 'children'),
                 ],
               [Input('tmdb-store', 'modified_timestamp')],
               [State('tmdb-store', 'data')])
