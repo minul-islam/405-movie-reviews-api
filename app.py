@@ -109,7 +109,7 @@ def on_data(ts, data):
         # decide sentiment as positive, negative and neutral
         if sentiment_dict['compound'] >= 0.05 :
             final="Happy"
-        elif sentiment_dict['compound'] <= - 0.05 :
+        elif sentiment_dict['compound'] <0.05 :
             final="Sad"
         else :
             final="Neutral"
