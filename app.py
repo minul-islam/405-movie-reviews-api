@@ -91,7 +91,7 @@ def on_click(n_clicks, data):
     if n_clicks is None:
         raise PreventUpdate
     elif n_clicks==0:
-        data = {'title':' ', 'release_date':' ', 'overview':' '}
+        data = {'title':' ', 'release_date':' ', 'overview':' ',}
     elif n_clicks>0:
         data = api_pull(random.choice(ids_list))
     return data
@@ -99,6 +99,7 @@ def on_click(n_clicks, data):
 @app.callback([Output('movie-title', 'children'),
                 Output('movie-release', 'children'),
                 Output('movie-overview', 'children'),
+                Output('movie-sentiment', 'children'),
                 ],
               [Input('tmdb-store', 'modified_timestamp')],
               [State('tmdb-store', 'data')])
