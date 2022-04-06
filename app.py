@@ -4,21 +4,16 @@ from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 from helpers.key_finder import api_key
 from helpers.api_call import *
-from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-import pandas as pd
-import numpy as np
-import requests
 
-#from bs4 import BeautifulSoup
-#import json
-#from pandas.json import json_normalize
 
 ########### Define a few variables ######
 
 tabtitle = 'Movies'
 sourceurl = 'https://www.kaggle.com/tmdb/tmdb-movie-metadata'
 sourceurl2 = 'https://developers.themoviedb.org/3/getting-started/introduction'
-githublink = 'https://github.com/farkasdilemma/405-movie-reviews-api'
+githublink = 'https://github.com/austinlasseter/tmdb-rf-classifier'
+
+
 
 ########### Initiate the app
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -38,15 +33,14 @@ app.layout = html.Div(children=[
                 html.Div('Randomly select a movie summary'),
                 html.Button(id='eek-button', n_clicks=0, children='API call', style={'color': 'rgb(255, 255, 255)'}),
                 html.Div(id='movie-title', children=[]),
-                html.Div(id='movie-release',children=[]),
+                html.Div(id='movie-release', children=[]),
                 html.Div(id='movie-overview', children=[]),
-                html.Div(id='movie-senti', children=[]),
 
             ], style={ 'padding': '12px',
                     'font-size': '22px',
                     # 'height': '400px',
-                    'border': 'thick blue solid',
-                    'color': 'rgb(0, 0, 255)',
+                    'border': 'thick red solid',
+                    'color': 'rgb(255, 255, 255)',
                     'backgroundColor': '#536869',
                     'textAlign': 'left',
                     },
@@ -84,39 +78,22 @@ def on_click(n_clicks, data):
     if n_clicks is None:
         raise PreventUpdate
     elif n_clicks==0:
-        data = {'title':' ', 'release_date':' ', 'overview':' ',}
+        data = {'title':' ', 'release_date':' ', 'overview':' '}
     elif n_clicks>0:
         data = api_pull(random.choice(ids_list))
-     
     return data
-
-
 
 @app.callback([Output('movie-title', 'children'),
                 Output('movie-release', 'children'),
                 Output('movie-overview', 'children'),
-                Output('movie-sentitment', 'children'),
                 ],
               [Input('tmdb-store', 'modified_timestamp')],
               [State('tmdb-store', 'data')])
-
 def on_data(ts, data):
     if ts is None:
         raise PreventUpdate
     else:
-        #sentiment part 
-        sid_obj = SentimentIntensityAnalyzer()
-        sentiment_dict = sid_obj.polarity_scores(data['overview'])
-        # decide sentiment as positive, negative and neutral
-        if sentiment_dict['compound'] >= 0.05 :
-            final="Happy"
-        elif sentiment_dict['compound'] <=-0.05 :
-            final="Sad"
-        else :
-            final="Neutral"
-        # responses
-        data['movie_senti']=f"Movie review is overall rated as {final} with {round(sentiment_dict['neg']*100, 2)}% Negative vs {round(sentiment_dict['pos']*100,2 )}% Positive words"
-        return data['title'], data['release_date'], data['overview'], data['movie_senti']
+        return data['title'], data['release_date'], data['overview']
 
 
 ############ Deploy
