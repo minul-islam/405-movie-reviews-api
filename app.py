@@ -87,7 +87,7 @@ def on_click(n_clicks, data):
         data = {'title':' ', 'release_date':' ', 'overview':' ',}
     elif n_clicks>0:
         data = api_pull(random.choice(ids_list))
-        
+     
     return data
 
 
@@ -99,6 +99,7 @@ def on_click(n_clicks, data):
                 ],
               [Input('tmdb-store', 'modified_timestamp')],
               [State('tmdb-store', 'data')])
+
 def on_data(ts, data):
     if ts is None:
         raise PreventUpdate
@@ -109,15 +110,11 @@ def on_data(ts, data):
         # decide sentiment as positive, negative and neutral
         if sentiment_dict['compound'] >= 0.05 :
             final="Happy"
-        elif sentiment_dict['compound'] <0.05 :
+        elif sentiment_dict['compound'] <=-0.05 :
             final="Sad"
         else :
             final="Neutral"
         # responses
-        # response1=f"Overall sentiment dictionary is : {sentiment_dict}"
-        #response2=f"Sentence rated as {round(sentiment_dict['neg']*100, 2)}% Sad"
-        #response3=f"Sentence rated as {round(sentiment_dict['neu']*100, 2)}% Neutral"
-        #response4=f"Sentence rated as {round(sentiment_dict['pos']*100,2 )}% Happy"
         data['movie_senti']=f"Movie review is overall rated as {final} with {round(sentiment_dict['neg']*100, 2)}% Negative vs {round(sentiment_dict['pos']*100,2 )}% Positive words"
         return data['title'], data['release_date'], data['overview'], data['movie_senti']
 
