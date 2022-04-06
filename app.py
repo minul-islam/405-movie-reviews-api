@@ -71,14 +71,15 @@ app.layout = html.Div(children=[
 
 
 def sentiment(overview):
+    sent_keys = [" sad movie. why watch it?", "confusing. your call", "happy movie.lets watch it."]
     sid_obj = SentimentIntensityAnalyzer()
-    sent_keys = ["Sad Movie. Why will you watch it?", "Confusing Movie. Your Call.", "Fun Movie. Lets watch it."]
     sentiment_dict = sid_obj.polarity_scores(overview)
     sent_values = [x for x in sentiment_dict.values()]
     sent_values=sent_values[:3]
+    # find the index of the max value
     index_max = np.argmax(sent_values)
-    final = sent_keys[index_max] 
-    response=f"Base on overview its a {final}"
+    final=sent_keys[index_max]
+    response=f"Based on overview its a {final}"
     return response
 ########## Callbacks
 
