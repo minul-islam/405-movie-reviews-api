@@ -31,7 +31,7 @@ app.layout = html.Div(children=[
         html.Div([
             html.Div([
                 html.Div('Randomly select a movie summary'),
-                html.Button(id='eek-button', n_clicks=0, children='API call', style={'color': 'rgb(0, 255,0)'}),
+                html.Button(id='eek-button', n_clicks=0, children='API call', style={'color': 'rgb(255,255,0)'}),
                 html.Div(id='movie-title', children=[]),
                 html.Div(id='movie-release', children=[]),
                 html.Div(id='movie-overview', children=[]),
@@ -74,12 +74,12 @@ def sentiment(overview):
     sid_obj = SentimentIntensityAnalyzer()
     sentiment_dict = sid_obj.polarity_scores(overview)
     if sentiment_dict['compound'] >= 0.05 :
-        final="Happy"
+        final="Happy Movie. Lets invite some friend and watch it together"
     elif sentiment_dict['compound'] <= - 0.05 :
-        final="Sad"
+        final="Sad Movie. Lets not watch it"
     else :
-        final="Neutral"
-    response=f"Sentence Overall Rated As {final}"
+        final="We are confused. Its your call to watch it or not"
+    response=f"Base on overview its a {final}"
     return response
 ########## Callbacks
 
@@ -108,7 +108,7 @@ def on_data(ts, data):
         raise PreventUpdate
     else:
         
-        return data['title'], data['release_date'], data['overview'], f"\n"+str(sentiment(data['overview']))
+        return data['title'], data['release_date'], data['overview'], f"\n\n"+str(sentiment(data['overview']))
 
 
 ############ Deploy
