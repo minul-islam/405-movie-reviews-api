@@ -8,8 +8,8 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import pandas as pd
 import numpy as np
 import requests
-from bs4 import BeautifulSoup
-import json
+#from bs4 import BeautifulSoup
+#import json
 from pandas.json import json_normalize
 
 ########### Define a few variables ######
