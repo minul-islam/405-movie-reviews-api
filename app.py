@@ -72,13 +72,12 @@ app.layout = html.Div(children=[
 
 def sentiment(overview):
     sid_obj = SentimentIntensityAnalyzer()
+    sent_keys = ["Sad Movie. Why will you watch it?", "Confusing Movie. Your Call.", "Fun Movie. Lets watch it."]
     sentiment_dict = sid_obj.polarity_scores(overview)
-    if sentiment_dict['compound'] >= 0.05 :
-        final="Happy Movie. Lets invite some friend and watch it together"
-    elif sentiment_dict['compound'] <= - 0.05 :
-        final="Sad Movie. Lets not watch it"
-    else :
-        final="We are confused. Its your call to watch it or not"
+    sent_values = [x for x in sentiment_dict.values()]
+    sent_values=sent_values[:3]
+    final = sent_keys[index_max]    
+    index_max = np.argmax(sent_values)
     response=f"Base on overview its a {final}"
     return response
 ########## Callbacks
