@@ -5,6 +5,7 @@ from dash.exceptions import PreventUpdate
 from helpers.key_finder import api_key
 from helpers.api_call import *
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+import numpy as np
 
 ########### Define a few variables ######
 
